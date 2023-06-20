@@ -1,13 +1,11 @@
 package com.board.board.domain;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,31 +32,22 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
     @Index(columnList = "createdBy"),
 })
 
-@EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Article {
+public class Article extends AuditingFields {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-
 
  @Setter @Column(nullable = false) private String title; // 제목
  @Setter @Column(nullable = false, length = 10000) private String content; // 본문
 
  @Setter private String hashtag; // 해시테그
 
-
   @OrderBy("id")
   @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
   @Exclude
   private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
-
- @CreatedDate @Column(nullable = false) private LocalDateTime createdAt; // 생성일자
- @CreatedBy @Column(nullable = false, length = 100) private String createdBy; // 생성자
- @LastModifiedDate  @Column(nullable = false) private LocalDateTime modifiedAt; // 수정일시
- @LastModifiedBy  @Column(nullable = false, length = 100) private String modifiedBy; // 수정
-
 
   protected Article() { }
 
