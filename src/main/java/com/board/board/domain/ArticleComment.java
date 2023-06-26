@@ -1,5 +1,6 @@
 package com.board.board.domain;
 
+import com.querydsl.core.types.EntityPath;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.persistence.Column;
