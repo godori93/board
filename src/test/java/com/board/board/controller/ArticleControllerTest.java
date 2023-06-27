@@ -37,7 +37,6 @@ class ArticleControllerTest {
 
   }
 
-  @Disabled("구현 중")
   @DisplayName("[view] [Get] 게시글 상세 페이지 - 정상 호출")
   @Test
   public void givenNothing_whenRequestingArticleView_thenReturnsAricleView() throws Exception {
@@ -47,7 +46,8 @@ class ArticleControllerTest {
     mvc.perform(get("/articles/1"))
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-        .andExpect(MockMvcResultMatchers.view().name("article/detail"))
+        .andExpect(MockMvcResultMatchers.view().name("articles/detail"))
+        .andExpect(MockMvcResultMatchers.model().attributeExists("article"))
         .andExpect(MockMvcResultMatchers.model().attributeExists("articleComments"));
 
   }
