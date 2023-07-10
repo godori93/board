@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -39,14 +40,15 @@ public class Article extends AuditingFields {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
+  @Setter @ManyToOne(optional = false) UserAccount userAccount;
  @Setter @Column(nullable = false) private String title; // 제목
  @Setter @Column(nullable = false, length = 10000) private String content; // 본문
 
  @Setter private String hashtag; // 해시테그
 
-  @OrderBy("id")
+  @ToString.Exclude
+  @OrderBy("createdAt DESC")
   @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-  @Exclude
   private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
   protected Article() { }

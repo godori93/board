@@ -37,10 +37,9 @@ public record ArticleDto(
 
   public Article toEntity() {
     return Article.of(
-        userAccountDto.toEntity(),
-        title,
-        content,
-        hashtag
+        "title",
+        "content",
+        "hashtag"
     );
   }
 

@@ -1,5 +1,7 @@
 package com.board.board.dto;
 
+import com.board.board.domain.Article;
+import com.board.board.domain.ArticleComment;
 import java.time.LocalDateTime;
 
 /**
@@ -23,7 +25,7 @@ public static ArticleCommentDto from(ArticleComment entity){
     return new ArticleCommentDto(
     entity.getId(),
     entity.getArticle().getId(),
-    UserAccountDto.from(entity.getUserAccount()),
+    UserAccountDto.from(entity.getArticle().getUserAccount()),
     entity.getContent(),
     entity.getCreatedAt(),
     entity.getCreatedBy(),
@@ -34,10 +36,12 @@ public static ArticleCommentDto from(ArticleComment entity){
 
 public ArticleComment toEntity(Article entity){
     return ArticleComment.of(
-    entity,
-    userAccountDto.toEntity(),
-    content
+        null,
+        "content"
     );
     }
 
+    public Long parentCommentId() {
+        return null;
     }
+}
