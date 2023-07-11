@@ -1,30 +1,38 @@
 package com.board.board.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+
 import com.board.board.domain.Article;
 import com.board.board.domain.ArticleComment;
+import com.board.board.domain.UserAccount;
 import com.board.board.dto.ArticleCommentDto;
+import com.board.board.dto.UserAccountDto;
 import com.board.board.repository.ArticleCommentRepository;
 import com.board.board.repository.ArticleRepository;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.BDDAssertions.then;
-import static org.hamcrest.Matchers.any;
-import static org.mockito.BDDMockito.given;
-
 @DisplayName("비즈니스 로직 - 댓글")
 @ExtendWith(MockitoExtension.class)
 class ArticleCommentServiceTest {
+
+  @InjectMocks private ArticleCommentService sut;
+  @Mock private ArticleRepository articleRepository;
+  @Mock private  ArticleCommentRepository articleCommentRepository;
+
+  @DisplayName("")
+  @Test
   void givenArticleId_whenSearchingArticleComments_thenReturnsArticleComments() {
     // Given
     Long articleId = 1L;
@@ -38,7 +46,7 @@ class ArticleCommentServiceTest {
     assertThat(actual)
         .hasSize(1)
         .first().hasFieldOrPropertyWithValue("content", expected.getContent());
-    then(articleCommentRepository).should().findByArticle_Id(articleId);
+    BDDMockito.then(articleCommentRepository).should().findByArticle_Id(articleId);
   }
 
   @DisplayName("댓글 정보를 입력하면, 댓글을 저장한다.")
@@ -47,14 +55,14 @@ class ArticleCommentServiceTest {
     // Given
     ArticleCommentDto dto = createArticleCommentDto("댓글");
     given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
-    given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
+    BDDMockito.given(articleCommentRepository.save((any(ArticleComment.class)))).willReturn(null);
 
     // When
     sut.saveArticleComment(dto);
 
     // Then
-    then(articleRepository).should().getReferenceById(dto.articleId());
-    then(articleCommentRepository).should().save(any(ArticleComment.class));
+    BDDMockito.then(articleRepository).should().getReferenceById(dto.articleId());
+    BDDMockito.then(articleCommentRepository).should().save(any(ArticleComment.class));
   }
 
   @DisplayName("댓글 저장을 시도했는데 맞는 게시글이 없으면, 경고 로그를 찍고 아무것도 안 한다.")
@@ -68,8 +76,8 @@ class ArticleCommentServiceTest {
     sut.saveArticleComment(dto);
 
     // Then
-    then(articleRepository).should().getReferenceById(dto.articleId());
-    then(articleCommentRepository).shouldHaveNoInteractions();
+    BDDMockito.then(articleRepository).should().getReferenceById(dto.articleId());
+    BDDMockito.then(articleCommentRepository).shouldHaveNoInteractions();
   }
 
   @DisplayName("댓글 정보를 입력하면, 댓글을 수정한다.")
@@ -89,7 +97,7 @@ class ArticleCommentServiceTest {
     assertThat(articleComment.getContent())
         .isNotEqualTo(oldContent)
         .isEqualTo(updatedContent);
-    then(articleCommentRepository).should().getReferenceById(dto.id());
+    BDDMockito.then(articleCommentRepository).should().getReferenceById(dto.id());
   }
 
   @DisplayName("없는 댓글 정보를 수정하려고 하면, 경고 로그를 찍고 아무 것도 안 한다.")
@@ -103,7 +111,7 @@ class ArticleCommentServiceTest {
     sut.updateArticleComment(dto);
 
     // Then
-    then(articleCommentRepository).should().getReferenceById(dto.id());
+    BDDMockito.then(articleCommentRepository).should().getReferenceById(dto.id());
   }
 
   @DisplayName("댓글 ID를 입력하면, 댓글을 삭제한다.")
@@ -117,7 +125,7 @@ class ArticleCommentServiceTest {
     sut.deleteArticleComment(articleCommentId);
 
     // Then
-    then(articleCommentRepository).should().deleteById(articleCommentId);
+    BDDMockito.then(articleCommentRepository).should().deleteById(articleCommentId);
   }
 
 
