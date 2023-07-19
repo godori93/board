@@ -1,6 +1,6 @@
 package com.board.board.repository;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.board.board.config.JpaConfig;
 import com.board.board.domain.Article;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 @DisplayName("Jpa 연결 테스트")
 @Import(JpaConfig.class)
