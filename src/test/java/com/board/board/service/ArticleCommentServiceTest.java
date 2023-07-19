@@ -55,7 +55,7 @@ class ArticleCommentServiceTest {
     // Given
     ArticleCommentDto dto = createArticleCommentDto("댓글");
     given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
-    BDDMockito.given(articleCommentRepository.save((any(ArticleComment.class)))).willReturn(null);
+    given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
 
     // When
     sut.saveArticleComment(dto);

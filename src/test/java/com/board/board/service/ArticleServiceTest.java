@@ -2,6 +2,7 @@ package com.board.board.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -138,6 +139,21 @@ class ArticleServiceTest {
         sut.deleteArticle(1L);
         // Then
         BDDMockito.then(articleRepository).should().deleteById(articleId);
+    }
+
+    @DisplayName("게시글 수를 조회하면, 게시글 수를 반환한다")
+    @Test
+    void givenNothing_whenCountingArticles_thenReturnsArticleCount() {
+        // Given
+        long expected = 0L;
+        given(articleRepository.count()).willReturn(expected);
+
+        // When
+        long actual = sut.getArticleCount();
+
+        // Then
+        assertThat(actual).isEqualTo(expected);
+        BDDMockito.then(articleRepository).should().count();
     }
 
 
