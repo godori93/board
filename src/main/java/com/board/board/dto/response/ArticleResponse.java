@@ -2,8 +2,6 @@ package com.board.board.dto.response;
 
 import com.board.board.dto.ArticleDto;
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public record ArticleResponse(
     Long id,
@@ -18,6 +16,7 @@ public record ArticleResponse(
   public static ArticleResponse of(Long id, String title, String content, String hashtag, LocalDateTime createdAt, String email, String nickname) {
     return new ArticleResponse(id, title, content, hashtag, createdAt, email, nickname);
   }
+
   public static ArticleResponse from(ArticleDto dto) {
     String nickname = dto.userAccountDto().nickname();
     if (nickname == null || nickname.isBlank()) {
