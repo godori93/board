@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -17,12 +18,6 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.ToString.Exclude;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @ToString
@@ -40,7 +35,7 @@ public class Article extends AuditingFields {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Setter @ManyToOne(optional = false) UserAccount userAccount;
+  @Setter @ManyToOne(optional = false) @JoinColumn(name = "userId") private UserAccount userAccount;
  @Setter @Column(nullable = false) private String title; // 제목
  @Setter @Column(nullable = false, length = 10000) private String content; // 본문
 
@@ -53,13 +48,14 @@ public class Article extends AuditingFields {
 
   protected Article() { }
 
-  private Article(String title, String content, String hashtag) {
+  private Article(UserAccount userAccount,String title, String content, String hashtag) {
+    this.userAccount = userAccount;
     this.title = title;
     this.content = content;
     this.hashtag = hashtag;
   }
-  public static Article of(String title, String content, String hashtag) {
-    return new Article(title, content, hashtag);
+  public static Article of(UserAccount userAccount, String title, String content, String hashtag) {
+    return new Article(userAccount, title, content, hashtag);
   }
 
   @Override

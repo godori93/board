@@ -3,8 +3,6 @@ package com.board.board.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
@@ -15,7 +13,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @Table(indexes = {
-    @Index(columnList = "userId", unique = true),
     @Index(columnList = "email", unique = true),
     @Index(columnList = "createdAt"),
     @Index(columnList = "createdBy")
@@ -23,11 +20,9 @@ import lombok.ToString;
 @Entity
 public class UserAccount extends AuditingFields {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @Column(length = 50)
+  private String userId;
 
-  @Setter
-  @Column(nullable = false, length = 50) private String userId;
   @Setter @Column(nullable = false) private String userPassword;
 
   @Setter @Column(length = 100) private String email;
@@ -35,7 +30,7 @@ public class UserAccount extends AuditingFields {
   @Setter private String memo;
 
 
-  protected UserAccount(String userId, String userPassword, String email, String nickname, String memo, String createdBy) {}
+  protected UserAccount() {}
 
   private UserAccount(String userId, String userPassword, String email, String nickname, String memo) {
     this.userId = userId;
@@ -43,15 +38,10 @@ public class UserAccount extends AuditingFields {
     this.email = email;
     this.nickname = nickname;
     this.memo = memo;
-    this.createdBy = createdBy;
-    this.modifiedBy = modifiedBy;
   }
 
   public static UserAccount of(String userId, String userPassword, String email, String nickname, String memo) {
     return new UserAccount(userId, userPassword, email, nickname, memo);
-  }
-  public static UserAccount of(String userId, String userPassword, String email, String nickname, String memo, String createdBy) {
-    return new UserAccount(userId, userPassword, email, nickname, memo, createdBy);
   }
 
   @Override
