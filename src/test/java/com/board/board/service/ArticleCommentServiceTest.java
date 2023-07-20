@@ -3,8 +3,7 @@ package com.board.board.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.hamcrest.Matchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.*;
 
 import com.board.board.domain.Article;
 import com.board.board.domain.ArticleComment;
