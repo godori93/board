@@ -1,6 +1,7 @@
 package com.board.board.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.hamcrest.Matchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -27,21 +28,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ArticleCommentServiceTest {
 
-  @InjectMocks private ArticleCommentService sut;
-  @Mock private ArticleRepository articleRepository;
-  @Mock private  ArticleCommentRepository articleCommentRepository;
+  @InjectMocks
+  private ArticleCommentService sut;
+  @Mock
+  private ArticleRepository articleRepository;
+  @Mock
+  private ArticleCommentRepository articleCommentRepository;
 
-  @DisplayName("")
+  @DisplayName("게시글 ID로 조회하면, 해당하는 댓글 리스트를 반환한다.")
   @Test
   void givenArticleId_whenSearchingArticleComments_thenReturnsArticleComments() {
     // Given
     Long articleId = 1L;
     ArticleComment expected = createArticleComment("content");
     given(articleCommentRepository.findByArticle_Id(articleId)).willReturn(List.of(expected));
-
     // When
     List<ArticleCommentDto> actual = sut.searchArticleComments(articleId);
-
     // Then
     assertThat(actual)
         .hasSize(1)
@@ -56,13 +58,11 @@ class ArticleCommentServiceTest {
     ArticleCommentDto dto = createArticleCommentDto("댓글");
     given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
     given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
-
     // When
     sut.saveArticleComment(dto);
-
     // Then
     BDDMockito.then(articleRepository).should().getReferenceById(dto.articleId());
-    BDDMockito.then(articleCommentRepository).should().save(any(ArticleComment.class));
+    then(articleCommentRepository).should().save(any(ArticleComment.class));
   }
 
   @DisplayName("댓글 저장을 시도했는데 맞는 게시글이 없으면, 경고 로그를 찍고 아무것도 안 한다.")
@@ -71,10 +71,8 @@ class ArticleCommentServiceTest {
     // Given
     ArticleCommentDto dto = createArticleCommentDto("댓글");
     given(articleRepository.getReferenceById(dto.articleId())).willThrow(EntityNotFoundException.class);
-
     // When
     sut.saveArticleComment(dto);
-
     // Then
     BDDMockito.then(articleRepository).should().getReferenceById(dto.articleId());
     BDDMockito.then(articleCommentRepository).shouldHaveNoInteractions();
@@ -89,10 +87,8 @@ class ArticleCommentServiceTest {
     ArticleComment articleComment = createArticleComment(oldContent);
     ArticleCommentDto dto = createArticleCommentDto(updatedContent);
     given(articleCommentRepository.getReferenceById(dto.id())).willReturn(articleComment);
-
     // When
     sut.updateArticleComment(dto);
-
     // Then
     assertThat(articleComment.getContent())
         .isNotEqualTo(oldContent)
@@ -106,10 +102,8 @@ class ArticleCommentServiceTest {
     // Given
     ArticleCommentDto dto = createArticleCommentDto("댓글");
     given(articleCommentRepository.getReferenceById(dto.id())).willThrow(EntityNotFoundException.class);
-
     // When
     sut.updateArticleComment(dto);
-
     // Then
     BDDMockito.then(articleCommentRepository).should().getReferenceById(dto.id());
   }
@@ -120,10 +114,8 @@ class ArticleCommentServiceTest {
     // Given
     Long articleCommentId = 1L;
     willDoNothing().given(articleCommentRepository).deleteById(articleCommentId);
-
     // When
     sut.deleteArticleComment(articleCommentId);
-
     // Then
     BDDMockito.then(articleCommentRepository).should().deleteById(articleCommentId);
   }
@@ -144,7 +136,6 @@ class ArticleCommentServiceTest {
 
   private UserAccountDto createUserAccountDto() {
     return UserAccountDto.of(
-        1L,
         "godori",
         "password",
         "godori@mail.com",
@@ -159,7 +150,8 @@ class ArticleCommentServiceTest {
 
   private ArticleComment createArticleComment(String content) {
     return ArticleComment.of(
-        Article.of( "title", "content", "hashtag"),
+        Article.of(createUserAccount(), "title", "content", "hashtag"),
+        createUserAccount(),
         content
     );
   }
@@ -176,6 +168,7 @@ class ArticleCommentServiceTest {
 
   private Article createArticle() {
     return Article.of(
+        createUserAccount(),
         "title",
         "content",
         "#java"
