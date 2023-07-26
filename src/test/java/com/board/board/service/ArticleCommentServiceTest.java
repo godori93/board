@@ -1,9 +1,10 @@
 package com.board.board.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.BDDAssertions.then;
-import static org.hamcrest.Matchers.any;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willDoNothing;
 
 import com.board.board.domain.Article;
 import com.board.board.domain.ArticleComment;
@@ -12,13 +13,13 @@ import com.board.board.dto.ArticleCommentDto;
 import com.board.board.dto.UserAccountDto;
 import com.board.board.repository.ArticleCommentRepository;
 import com.board.board.repository.ArticleRepository;
+import com.board.board.repository.UserAccountRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,6 +34,7 @@ class ArticleCommentServiceTest {
   private ArticleRepository articleRepository;
   @Mock
   private ArticleCommentRepository articleCommentRepository;
+  @Mock private UserAccountRepository userAccountRepository;
 
   @DisplayName("게시글 ID로 조회하면, 해당하는 댓글 리스트를 반환한다.")
   @Test
@@ -47,7 +49,7 @@ class ArticleCommentServiceTest {
     assertThat(actual)
         .hasSize(1)
         .first().hasFieldOrPropertyWithValue("content", expected.getContent());
-    BDDMockito.then(articleCommentRepository).should().findByArticle_Id(articleId);
+    then(articleCommentRepository).should().findByArticle_Id(articleId);
   }
 
   @DisplayName("댓글 정보를 입력하면, 댓글을 저장한다.")
@@ -56,11 +58,13 @@ class ArticleCommentServiceTest {
     // Given
     ArticleCommentDto dto = createArticleCommentDto("댓글");
     given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
+    given(userAccountRepository.getReferenceById(dto.userAccountDto().userId())).willReturn(createUserAccount());
     given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
     // When
     sut.saveArticleComment(dto);
     // Then
-    BDDMockito.then(articleRepository).should().getReferenceById(dto.articleId());
+    then(articleRepository).should().getReferenceById(dto.articleId());
+    then(userAccountRepository).should().getReferenceById(dto.userAccountDto().userId());
     then(articleCommentRepository).should().save(any(ArticleComment.class));
   }
 
@@ -73,8 +77,9 @@ class ArticleCommentServiceTest {
     // When
     sut.saveArticleComment(dto);
     // Then
-    BDDMockito.then(articleRepository).should().getReferenceById(dto.articleId());
-    BDDMockito.then(articleCommentRepository).shouldHaveNoInteractions();
+    then(articleRepository).should().getReferenceById(dto.articleId());
+    then(userAccountRepository).shouldHaveNoInteractions();
+    then(articleCommentRepository).shouldHaveNoInteractions();
   }
 
   @DisplayName("댓글 정보를 입력하면, 댓글을 수정한다.")
@@ -92,7 +97,7 @@ class ArticleCommentServiceTest {
     assertThat(articleComment.getContent())
         .isNotEqualTo(oldContent)
         .isEqualTo(updatedContent);
-    BDDMockito.then(articleCommentRepository).should().getReferenceById(dto.id());
+    then(articleCommentRepository).should().getReferenceById(dto.id());
   }
 
   @DisplayName("없는 댓글 정보를 수정하려고 하면, 경고 로그를 찍고 아무 것도 안 한다.")
@@ -104,7 +109,7 @@ class ArticleCommentServiceTest {
     // When
     sut.updateArticleComment(dto);
     // Then
-    BDDMockito.then(articleCommentRepository).should().getReferenceById(dto.id());
+    then(articleCommentRepository).should().getReferenceById(dto.id());
   }
 
   @DisplayName("댓글 ID를 입력하면, 댓글을 삭제한다.")
@@ -116,7 +121,7 @@ class ArticleCommentServiceTest {
     // When
     sut.deleteArticleComment(articleCommentId);
     // Then
-    BDDMockito.then(articleCommentRepository).should().deleteById(articleCommentId);
+    then(articleCommentRepository).should().deleteById(articleCommentId);
   }
 
 

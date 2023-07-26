@@ -4,7 +4,10 @@ package com.board.board.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -13,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-
 import com.board.board.config.SecurityConfig;
 import com.board.board.domain.constant.FormStatus;
 import com.board.board.domain.constant.SearchType;
@@ -21,6 +23,7 @@ import com.board.board.dto.ArticleDto;
 import com.board.board.dto.ArticleWithCommentsDto;
 import com.board.board.dto.UserAccountDto;
 import com.board.board.dto.request.ArticleRequest;
+import com.board.board.dto.response.ArticleResponse;
 import com.board.board.service.ArticleService;
 import com.board.board.service.PaginationService;
 import com.board.board.util.FormDataEncoder;
@@ -30,7 +33,6 @@ import java.util.Set;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -75,8 +77,8 @@ class ArticleControllerTest {
         .andExpect(model().attributeExists("articles"))
         .andExpect(model().attributeExists("paginationBarNumbers"))
         .andExpect(model().attributeExists("searchTypes"));
-    BDDMockito.then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
-    BDDMockito.then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+    then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
+    then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
   }
 
   @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 검색어와 함께 호출")
@@ -128,8 +130,8 @@ class ArticleControllerTest {
         .andExpect(view().name("articles/index"))
         .andExpect(model().attributeExists("articles"))
         .andExpect(model().attribute("paginationBarNumbers", barNumbers));
-    BDDMockito.then(articleService).should().searchArticles(null, null, pageable);
-    BDDMockito.then(paginationService).should().getPaginationBarNumbers(pageable.getPageNumber(), Page.empty().getTotalPages());
+    then(articleService).should().searchArticles(null, null, pageable);
+    then(paginationService).should().getPaginationBarNumbers(pageable.getPageNumber(), Page.empty().getTotalPages());
 
   }
 
@@ -150,7 +152,7 @@ class ArticleControllerTest {
         .andExpect(model().attributeExists("article"))
         .andExpect(model().attributeExists("articleComments"))
         .andExpect(model().attribute("totalCount", totalCount));
-    BDDMockito.then(articleService).should().getArticleWithComments(articleId);
+    then(articleService).should().getArticleWithComments(articleId);
     then(articleService).should().getArticleCount();
   }
 

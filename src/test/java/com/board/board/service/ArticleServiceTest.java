@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willDoNothing;
 
 import com.board.board.domain.Article;
@@ -21,7 +22,6 @@ import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -50,7 +50,7 @@ class ArticleServiceTest {
     Page<ArticleDto> articles = sut.searchArticles(null, null, pageable);
     // Then
     assertThat(articles).isEmpty();
-    BDDMockito.then(articleRepository).should().findAll(pageable);
+    then(articleRepository).should().findAll(pageable);
   }
 
   @DisplayName("검색어와 함께 게시글을 검색하면, 게시글 페이지를 반환한다.")
@@ -67,7 +67,7 @@ class ArticleServiceTest {
 
     // Then
     assertThat(articles).isEmpty();
-    BDDMockito.then(articleRepository).should().findByTitleContaining(searchKeyword, pageable);
+    then(articleRepository).should().findByTitleContaining(searchKeyword, pageable);
   }
 
   @DisplayName("검색어 없이 게시글을 해시태그 검색하면, 빈 페이지를 반환한다.")
@@ -81,7 +81,7 @@ class ArticleServiceTest {
 
     // Then
     assertThat(articles).isEqualTo(Page.empty(pageable));
-    BDDMockito.then(articleRepository).shouldHaveNoInteractions();
+    then(articleRepository).shouldHaveNoInteractions();
   }
 
   @DisplayName("게시글을 해시태그 검색하면, 게시글 페이지를 반환한다.")
@@ -97,7 +97,7 @@ class ArticleServiceTest {
 
     // Then
     assertThat(articles).isEqualTo(Page.empty(pageable));
-    BDDMockito.then(articleRepository).should().findByHashtag(hashtag, pageable);
+    then(articleRepository).should().findByHashtag(hashtag, pageable);
   }
 
   @DisplayName("게시글 ID로 조회하면, 댓글 달긴 게시글을 반환한다.")
@@ -116,7 +116,7 @@ class ArticleServiceTest {
         .hasFieldOrPropertyWithValue("title", article.getTitle())
         .hasFieldOrPropertyWithValue("content", article.getContent())
         .hasFieldOrPropertyWithValue("hashtag", article.getHashtag());
-    BDDMockito.then(articleRepository).should().findById(articleId);
+    then(articleRepository).should().findById(articleId);
   }
 
   @DisplayName("댓글 달린 게시글이 없으면, 예외를 던진다.")
@@ -133,7 +133,7 @@ class ArticleServiceTest {
     assertThat(t)
         .isInstanceOf(EntityNotFoundException.class)
         .hasMessage("게시글이 없습니다 - articleId: " + articleId);
-    BDDMockito.then(articleRepository).should().findById(articleId);
+    then(articleRepository).should().findById(articleId);
   }
 
   @DisplayName("게시글을 조회하면, 게시글을 반환한다.")
@@ -150,7 +150,7 @@ class ArticleServiceTest {
         .hasFieldOrPropertyWithValue("title", article.getTitle())
         .hasFieldOrPropertyWithValue("content", article.getContent())
         .hasFieldOrPropertyWithValue("hashtag", article.getHashtag());
-    BDDMockito.then(articleRepository).should().findById(articleId);
+    then(articleRepository).should().findById(articleId);
   }
 
   @DisplayName("게시글이 없으면, 예외를 던진다.")
@@ -165,7 +165,7 @@ class ArticleServiceTest {
     assertThat(t)
         .isInstanceOf(EntityNotFoundException.class)
         .hasMessage("게시글이 없습니다 - articleId: " + articleId);
-    BDDMockito.then(articleRepository).should().findById(articleId);
+    then(articleRepository).should().findById(articleId);
   }
 
   @DisplayName("게시글 정보를 입력하면, 게시글을 생성한다.")
@@ -178,8 +178,8 @@ class ArticleServiceTest {
     // When
     sut.saveArticle(dto);
     // Then
-    BDDMockito.then(userAccountRepository).should().getReferenceById(dto.userAccountDto().userId());
-    BDDMockito.then(articleRepository).should().save(any(Article.class));
+    then(userAccountRepository).should().getReferenceById(dto.userAccountDto().userId());
+    then(articleRepository).should().save(any(Article.class));
   }
 
   @DisplayName("게시글의 수정 정보를 입력하면, 게시글을 수정한다.")
@@ -196,7 +196,7 @@ class ArticleServiceTest {
         .hasFieldOrPropertyWithValue("title", dto.title())
         .hasFieldOrPropertyWithValue("content", dto.content())
         .hasFieldOrPropertyWithValue("hashtag", dto.hashtag());
-    BDDMockito.then(articleRepository).should().getReferenceById(dto.id());
+    then(articleRepository).should().getReferenceById(dto.id());
   }
 
   @DisplayName("없는 게시글의 수정 정보를 입력하면, 경고 로그를 찍고 아무 것도 하지 않는다.")
@@ -208,7 +208,7 @@ class ArticleServiceTest {
     // When
     sut.updateArticle(dto.id(), dto);
     // Then
-    BDDMockito.then(articleRepository).should().getReferenceById(dto.id());
+    then(articleRepository).should().getReferenceById(dto.id());
   }
 
   @DisplayName("게시글의 ID를 입력하면, 게시글을 삭제한다")
@@ -220,7 +220,7 @@ class ArticleServiceTest {
     // When
     sut.deleteArticle(1L);
     // Then
-    BDDMockito.then(articleRepository).should().deleteById(articleId);
+    then(articleRepository).should().deleteById(articleId);
   }
 
   @DisplayName("게시글 수를 조회하면, 게시글 수를 반환한다")
@@ -235,7 +235,7 @@ class ArticleServiceTest {
 
     // Then
     assertThat(actual).isEqualTo(expected);
-    BDDMockito.then(articleRepository).should().count();
+    then(articleRepository).should().count();
   }
 
   @DisplayName("해시태그를 조회하면, 유니크 해시태그 리스트를 반환한다")
@@ -250,7 +250,7 @@ class ArticleServiceTest {
 
     // Then
     assertThat(actualHashtags).isEqualTo(expectedHashtags);
-    BDDMockito.then(articleRepository).should().findAllDistinctHashtags();
+    then(articleRepository).should().findAllDistinctHashtags();
   }
 
 
