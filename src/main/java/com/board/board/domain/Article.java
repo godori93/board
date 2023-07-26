@@ -33,7 +33,7 @@ public class Article extends AuditingFields {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private String id;
 
   @Setter @ManyToOne(optional = false) @JoinColumn(name = "userId") private UserAccount userAccount;
  @Setter @Column(nullable = false) private String title; // 제목
@@ -60,14 +60,9 @@ public class Article extends AuditingFields {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Article)) {
-      return false;
-    }
-    Article article = (Article) o;
-    return id == article.id;
+    if (this == o) return true;
+    if (!(o instanceof Article that)) return false;
+    return id != null && id.equals(that.getId());
   }
 
   @Override

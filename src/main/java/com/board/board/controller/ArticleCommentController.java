@@ -3,6 +3,7 @@ package com.board.board.controller;
 import com.board.board.dto.UserAccountDto;
 import com.board.board.dto.request.ArticleCommentRequest;
 import com.board.board.service.ArticleCommentService;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,7 @@ public class ArticleCommentController {
   public String postNewArticleComment(ArticleCommentRequest articleCommentRequest) {
     // TODO: 인증 정보를 넣어줘야 한다.
     articleCommentService.saveArticleComment(articleCommentRequest.toDto(UserAccountDto.of(
-        "godori", "pw", "godori@mail.com", null, null
+        "godori", "pw", "godori@mail.com", null, null, LocalDateTime.now(), "godori", LocalDateTime.now(), "godori"
     )));
 
 
