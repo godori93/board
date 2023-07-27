@@ -1,5 +1,6 @@
 package com.board.board.config;
 
+import com.board.board.dto.security.BoardPrincipal;
 import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

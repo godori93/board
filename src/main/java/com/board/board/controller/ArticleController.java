@@ -6,6 +6,7 @@ import com.board.board.dto.UserAccountDto;
 import com.board.board.dto.request.ArticleRequest;
 import com.board.board.dto.response.ArticleResponse;
 import com.board.board.dto.response.ArticleWithCommentsResponse;
+import com.board.board.dto.security.BoardPrincipal;
 import com.board.board.service.ArticleService;
 import com.board.board.service.PaginationService;
 import java.util.List;

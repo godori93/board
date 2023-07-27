@@ -1,11 +1,14 @@
 package com.board.board.config;
 
 import com.board.board.dto.UserAccountDto;
-import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
+import com.board.board.dto.security.BoardPrincipal;
+import com.board.board.repository.UserAccountRepository;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
