@@ -1,15 +1,7 @@
 package com.board.board.domain;
 
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,16 +15,25 @@ import lombok.ToString;
 })
 
 @Entity
-public class ArticleComment extends AuditingFields{
+public class ArticleComment extends AuditingFields {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
-  @Setter @ManyToOne(optional = false) private Article article; // 게시글 (id)
-  @Setter @ManyToOne(optional = false) @JoinColumn(name = "userId") private UserAccount userAccount;
-  @Setter @Column(nullable = false, length = 500) private String content; // 본문
+  @Setter
+  @ManyToOne(optional = false)
+  private Article article; // 게시글 (id)
+  @Setter
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "userId")
+  private UserAccount userAccount;
+  @Setter
+  @Column(nullable = false, length = 500)
+  private String content; // 본문
 
-  protected ArticleComment() {}
+  protected ArticleComment() {
+  }
 
   private ArticleComment(Article article, UserAccount userAccount, String content) {
     this.article = article;
@@ -46,18 +47,13 @@ public class ArticleComment extends AuditingFields{
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof ArticleComment)) {
-      return false;
-    }
-    ArticleComment that = (ArticleComment) o;
-    return id == that.id;
+    if (this == o) return true;
+    if (!(o instanceof ArticleComment that)) return false;
+    return id != null && id.equals(that.getId());
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
-}
+      @Override
+      public int hashCode () {
+        return Objects.hash(id);
+      }
+    }
