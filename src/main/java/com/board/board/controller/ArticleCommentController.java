@@ -1,10 +1,8 @@
 package com.board.board.controller;
 
-import com.board.board.dto.UserAccountDto;
 import com.board.board.dto.request.ArticleCommentRequest;
 import com.board.board.dto.security.BoardPrincipal;
 import com.board.board.service.ArticleCommentService;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

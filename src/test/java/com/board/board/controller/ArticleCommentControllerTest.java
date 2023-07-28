@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import com.board.board.config.SecurityConfig;
 import com.board.board.config.TestSecurityConfig;
 import com.board.board.dto.ArticleCommentDto;
 import com.board.board.dto.request.ArticleCommentRequest;

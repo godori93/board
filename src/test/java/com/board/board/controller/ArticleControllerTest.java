@@ -17,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import com.board.board.config.SecurityConfig;
 import com.board.board.config.TestSecurityConfig;
 import com.board.board.domain.constant.FormStatus;
 import com.board.board.domain.constant.SearchType;
