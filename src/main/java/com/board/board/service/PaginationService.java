@@ -2,7 +2,9 @@ package com.board.board.service;
 
 import java.util.List;
 import java.util.stream.IntStream;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PaginationService {
 
   private static final int BAR_LENGTH = 5;

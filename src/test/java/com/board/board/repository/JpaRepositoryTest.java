@@ -2,7 +2,6 @@ package com.board.board.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.board.board.config.JpaConfig;
 import com.board.board.domain.Article;
 import com.board.board.domain.UserAccount;
 import java.util.List;
