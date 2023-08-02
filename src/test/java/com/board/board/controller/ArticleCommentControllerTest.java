@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("View 컨트롤러 - 댓글")
 @Import({TestSecurityConfig.class, FormDataEncoder.class})
 @WebMvcTest(ArticleCommentController.class)
-public class ArticleCommentControllerTest {
+class ArticleCommentControllerTest {
 
   private final MockMvc mvc;
   private final FormDataEncoder formDataEncoder;
@@ -39,7 +39,7 @@ public class ArticleCommentControllerTest {
   private ArticleCommentService articleCommentService;
 
 
-  public ArticleCommentControllerTest(
+  ArticleCommentControllerTest(
       @Autowired MockMvc mvc,
       @Autowired FormDataEncoder formDataEncoder
   ) {
