@@ -26,7 +26,7 @@ class JpaRepositoryTest {
   private final ArticleCommentRepository articleCommentRepository;
   private final UserAccountRepository userAccountRepository;
 
-  public JpaRepositoryTest(
+  JpaRepositoryTest(
       @Autowired ArticleRepository articleRepository,
       @Autowired ArticleCommentRepository articleCommentRepository,
       @Autowired UserAccountRepository userAccountRepository
@@ -55,9 +55,8 @@ class JpaRepositoryTest {
   void givenTestData_whenInserting_thenWorksFine() {
     // Given
     long previousCount = articleRepository.count();
-    UserAccount userAccount = userAccountRepository.save(UserAccount.of("godori", "pw", null, null, null));
+    UserAccount userAccount = userAccountRepository.save(UserAccount.of("newGodori", "pw", null, null, null));
     Article article = Article.of(userAccount, "new article", "new content", "#spring");
-
     // When
     articleRepository.save(article);
     // Then
@@ -99,10 +98,9 @@ class JpaRepositoryTest {
 
   @EnableJpaAuditing
   @TestConfiguration
-  public static class TestJpaConfig {
+  static class TestJpaConfig {
 
-    @Bean
-    public AuditorAware<String> auditorAware() {
+    @Bean AuditorAware<String> auditorAware() {
       return () -> Optional.of("godori");
     }
   }

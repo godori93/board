@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.board'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = "16"
+sourceCompatibility = "17"
 
 configurations {
     compileOnly {
@@ -66,4 +66,3 @@ sourceSets {
 clean {
     delete file(generated)
 }
-targetCompatibility = JavaVersion.VERSION_16

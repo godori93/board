@@ -15,12 +15,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @DisplayName("비즈니스 로직 - 페이지네이")
-@SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = PaginationService.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = PaginationService.class)
 class PaginationServiceTest {
 
   private final PaginationService sut;
 
-  public PaginationServiceTest(@Autowired PaginationService paginationService) {
+  PaginationServiceTest(@Autowired PaginationService paginationService) {
     this.sut = paginationService;
   }
 
@@ -65,4 +65,5 @@ class PaginationServiceTest {
     assertThat(barLength).isEqualTo(5);
 
   }
+
 }

@@ -25,11 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
-public class DataRestTest {
+class DataRestTest {
 
-  private MockMvc mvc;
+  private final MockMvc mvc;
 
-  public DataRestTest(@Autowired MockMvc mvc) {
+  DataRestTest(@Autowired MockMvc mvc) {
     this.mvc = mvc;
   }
 

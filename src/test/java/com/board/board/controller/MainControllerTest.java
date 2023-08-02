@@ -19,7 +19,7 @@ class MainControllerTest {
 
   private final MockMvc mvc;
 
-  public MainControllerTest(@Autowired MockMvc mvc) {
+  MainControllerTest(@Autowired MockMvc mvc) {
     this.mvc = mvc;
   }
   @DisplayName("[view][GET] 루트 페이지 -> 게시글 리스트 (게시판) 페이지 Redirection")
