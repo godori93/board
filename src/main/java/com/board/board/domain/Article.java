@@ -35,33 +35,47 @@ public class Article extends AuditingFields {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Setter @ManyToOne(optional = false) @JoinColumn(name = "userId") private UserAccount userAccount;
- @Setter @Column(nullable = false) private String title; // 제목
- @Setter @Column(nullable = false, length = 10000) private String content; // 본문
+  @Setter
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "userId")
+  private UserAccount userAccount;
+  @Setter
+  @Column(nullable = false)
+  private String title; // 제목
+  @Setter
+  @Column(nullable = false, length = 10000)
+  private String content; // 본문
 
- @Setter private String hashtag; // 해시테그
+  @Setter
+  private String hashtag; // 해시테그
 
   @ToString.Exclude
   @OrderBy("createdAt DESC")
   @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
   private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
-  protected Article() { }
+  protected Article() {
+  }
 
-  private Article(UserAccount userAccount,String title, String content, String hashtag) {
+  private Article(UserAccount userAccount, String title, String content, String hashtag) {
     this.userAccount = userAccount;
     this.title = title;
     this.content = content;
     this.hashtag = hashtag;
   }
+
   public static Article of(UserAccount userAccount, String title, String content, String hashtag) {
     return new Article(userAccount, title, content, hashtag);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Article that)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Article that)) {
+      return false;
+    }
     return this.getId() != null && this.getId().equals(that.getId());
   }
 
