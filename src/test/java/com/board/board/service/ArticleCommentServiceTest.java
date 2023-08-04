@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.willDoNothing;
 
 import com.board.board.domain.Article;
 import com.board.board.domain.ArticleComment;
+import com.board.board.domain.Hashtag;
 import com.board.board.domain.UserAccount;
 import com.board.board.dto.ArticleCommentDto;
 import com.board.board.dto.UserAccountDto;
@@ -16,6 +17,7 @@ import com.board.board.repository.ArticleRepository;
 import com.board.board.repository.UserAccountRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -156,7 +158,7 @@ class ArticleCommentServiceTest {
 
   private ArticleComment createArticleComment(String content) {
     return ArticleComment.of(
-        Article.of(createUserAccount(), "title", "content", "hashtag"),
+        createArticle(),
         createUserAccount(),
         content
     );
@@ -173,11 +175,18 @@ class ArticleCommentServiceTest {
   }
 
   private Article createArticle() {
-    return Article.of(
+    Article article = Article.of(
         createUserAccount(),
         "title",
-        "content",
-        "#java"
+        "content"
     );
+    article.addHashtags(Set.of(createHashtag(article)));
+
+    return article;
   }
+
+  private Hashtag createHashtag(Article article) {
+    return Hashtag.of("java");
+  }
+
 }
