@@ -3,11 +3,13 @@ package com.board.board.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.board.board.domain.Article;
+import com.board.board.domain.ArticleComment;
 import com.board.board.domain.Hashtag;
 import com.board.board.domain.UserAccount;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -105,14 +107,76 @@ class JpaRepositoryTest {
     assertThat(articleCommentRepository.count()).isEqualTo(previousArticleCommentCount - deletedCommentsSize);
   }
 
+  @DisplayName("대댓글 조회 테스트")
+  @Test
+  void givenParentCommentId_whenSelecting_thenReturnsChildComments() {
+    // Given
+
+    // When
+    Optional<ArticleComment> parentComment = articleCommentRepository.findById(1L);
+
+    // Then
+    assertThat(parentComment).get()
+        .hasFieldOrPropertyWithValue("parentCommentId", null)
+        .extracting("childComments", InstanceOfAssertFactories.COLLECTION)
+        .hasSize(4);
+  }
+
+  @DisplayName("댓글에 대댓글 삽입 테스트")
+  @Test
+  void givenParentComment_whenSaving_thenInsertsChildComment() {
+    // Given
+    ArticleComment parentComment = articleCommentRepository.getReferenceById(1L);
+    ArticleComment childComment = ArticleComment.of(
+        parentComment.getArticle(),
+        parentComment.getUserAccount(),
+        "대댓글"
+    );
+
+    // When
+    parentComment.addChildComment(childComment);
+    articleCommentRepository.flush();
+
+    // Then
+    assertThat(articleCommentRepository.findById(1L)).get()
+        .hasFieldOrPropertyWithValue("parentCommentId", null)
+        .extracting("childComments", InstanceOfAssertFactories.COLLECTION)
+        .hasSize(5);
+  }
+
+  @DisplayName("댓글 삭제와 대댓글 전체 연동 삭제 테스트")
+  @Test
+  void givenArticleCommentHavingChildComments_whenDeletingParentComment_thenDeletesEveryComment() {
+    // Given
+    ArticleComment parentComment = articleCommentRepository.getReferenceById(1L);
+    long previousArticleCommentCount = articleCommentRepository.count();
+
+    // When
+    articleCommentRepository.delete(parentComment);
+
+    // Then
+    assertThat(articleCommentRepository.count()).isEqualTo(previousArticleCommentCount - 5); // 테스트 댓글 + 대댓글 4개
+  }
+
+  @DisplayName("댓글 삭제와 대댓글 전체 연동 삭제 테스트 - 댓글 ID + 유저 ID")
+  @Test
+  void givenArticleCommentIdHavingChildCommentsAndUserId_whenDeletingParentComment_thenDeletesEveryComment() {
+    // Given
+    long previousArticleCommentCount = articleCommentRepository.count();
+
+    // When
+    articleCommentRepository.deleteByIdAndUserAccount_UserId(1L, "godori");
+
+    // Then
+    assertThat(articleCommentRepository.count()).isEqualTo(previousArticleCommentCount - 5); // 테스트 댓글 + 대댓글 4개
+  }
+
   @DisplayName("[Querydsl] 전체 hashtag 리스트에서 이름만 조회하기")
   @Test
   void givenNothing_whenQueryingHashtags_thenReturnsHashtagNames() {
     // Given
-
     // When
     List<String> hashtagNames = hashtagRepository.findAllHashtagNames();
-
     // Then
     assertThat(hashtagNames).hasSize(19);
   }
@@ -126,10 +190,8 @@ class JpaRepositoryTest {
         Sort.Order.desc("hashtags.hashtagName"),
         Sort.Order.asc("title")
     ));
-
     // When
     Page<Article> articlePage = articleRepository.findByHashtagNames(hashtagNames, pageable);
-
     // Then
     assertThat(articlePage.getContent()).hasSize(pageable.getPageSize());
     assertThat(articlePage.getContent().get(0).getTitle()).isEqualTo("Fusce posuere felis sed lacus.");
@@ -140,10 +202,10 @@ class JpaRepositoryTest {
     assertThat(articlePage.getTotalPages()).isEqualTo(4);
   }
 
-
   @EnableJpaAuditing
   @TestConfiguration
   static class TestJpaConfig {
+
     @Bean
     AuditorAware<String> auditorAware() {
       return () -> Optional.of("godori");
