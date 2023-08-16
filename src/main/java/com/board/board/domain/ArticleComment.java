@@ -1,15 +1,9 @@
 package com.board.board.domain;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.util.Set;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -41,6 +35,11 @@ public class ArticleComment extends AuditingFields {
   @Column(updatable = false)
   private Long parentCommentId;
 
+  @ToString.Exclude
+  @OrderBy("createdAt ASC")
+  @OneToMany(mappedBy = "parentCommentId", cascade = CascadeType.ALL)
+  private Set<ArticleComment> childComments = new LinkedHashSet<>();
+
   @Setter
   @Column(nullable = false, length = 500)
   private String content; // 본문
@@ -57,7 +56,7 @@ public class ArticleComment extends AuditingFields {
   }
 
   public static ArticleComment of(Article article, UserAccount userAccount, String content) {
-    return new ArticleComment(article, userAccount,null, content);
+    return new ArticleComment(article, userAccount, null, content);
   }
 
   public void addChildComment(ArticleComment child) {
