@@ -3,7 +3,18 @@ package com.board.board.domain;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -26,6 +37,7 @@ public class ArticleComment extends AuditingFields {
   @Setter
   @ManyToOne(optional = false)
   private Article article; // 게시글 (id)
+
   @Setter
   @JoinColumn(name = "userId")
   @ManyToOne(optional = false)
@@ -33,7 +45,7 @@ public class ArticleComment extends AuditingFields {
 
   @Setter
   @Column(updatable = false)
-  private Long parentCommentId;
+  private Long parentCommentId; // 부모 댓글 ID
 
   @ToString.Exclude
   @OrderBy("createdAt ASC")
@@ -43,7 +55,6 @@ public class ArticleComment extends AuditingFields {
   @Setter
   @Column(nullable = false, length = 500)
   private String content; // 본문
-
 
   protected ArticleComment() {
   }
@@ -61,6 +72,7 @@ public class ArticleComment extends AuditingFields {
 
   public void addChildComment(ArticleComment child) {
     child.setParentCommentId(this.getId());
+    this.getChildComments().add(child);
   }
 
   @Override
@@ -79,3 +91,4 @@ public class ArticleComment extends AuditingFields {
     return Objects.hash(this.getId());
   }
 }
+
